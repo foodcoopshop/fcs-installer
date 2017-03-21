@@ -1,0 +1,21 @@
+{
+    "name": "foodcoopshop/fcs_installer",
+    "description": "Installs the FoodCoopShop open source software for your foodcoop",
+    "homepage": "https://www.foodcoopshop.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "FoodCoopShop Community",
+            "homepage": "https://github.com/foodcoopshop/foodcoopshop/graphs/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.7"
+    },
+    "require-dev": {
+        "clue/phar-composer": "*"
+    },
+    "config": {
+        "vendor-dir": "Vendor"
+    }
+}
