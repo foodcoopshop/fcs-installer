@@ -8,6 +8,7 @@
 /build
 /dist
 /tags
+/webroot.phar
 
 # OS generated files #
 ######################
