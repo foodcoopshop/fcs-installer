@@ -46,7 +46,7 @@ if (!defined('PATH_DOCROOT')) {
 
 if (!defined('HTTP_URLROOT')) {
     if (ISPHAR) {
-        define('HTTP_URLROOT', $_SERVER['SCRIPT_NAME']);
+        define('HTTP_URLROOT', $_SERVER['SCRIPT_NAME'] . '/');
     }
     else {
         define('HTTP_URLROOT', '/');

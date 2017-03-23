@@ -27,7 +27,8 @@ fcsinstaller.init = function () {
     }
     var opts = me.options;
 
-    if (opts.ajaxurl == null
+    if (opts.nonce == null
+        || opts.ajaxurl == null
         || opts.ajaxact == null
     ) {
         return;
@@ -61,7 +62,7 @@ fcsinstaller.start = function () {
 
     me.message('step-0');
     me.step = 0;
-    me.next();
+    return me.next();
 }
 
 // use after requested user input was transfered into object "params"
@@ -80,7 +81,7 @@ fcsinstaller.cont = function (params) {
 
     me.step += 1;
     me.message('step-' + me.step);
-    me.next(params);
+    return me.next(params);
 }
 
 // next step of automatic running. Appends params to payload
@@ -93,9 +94,10 @@ fcsinstaller.next = function (params) {
     var opts = me.options;
 
     params = params || {};
-    params.action = 'step-' + me.step;
+    params.action = 'step-' + me.step + '-test';
 
     var data = {
+        nonce:  opts.nonce,
         action: opts.ajaxact,
     };
     data[opts.ajaxact] = params;
@@ -179,8 +181,3 @@ fcsinstaller.message = function (data) {
     jQuery("#fcsinstaller-content").html(jQuery('#fcsinstaller-message-' + data).html());
     return false;
 };
-
-// maybe something must be done before getting started. Not necessary right now, but creates console entry if no jQuery
-jQuery(document).ready(function () {
-    fcsinstaller.init();
-});
