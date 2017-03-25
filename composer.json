@@ -13,9 +13,18 @@
         "php": ">=5.4.7"
     },
     "require-dev": {
-        "clue/phar-composer": "*"
+        "clue/phar-composer": "*",
+        "squizlabs/php_codesniffer": "2.*"
     },
     "config": {
         "vendor-dir": "Vendor"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "bash devtools/setup-git.sh"
+        ],
+        "post-update-cmd": [
+            "bash devtools/setup-git.sh"
+        ]
     }
 }
