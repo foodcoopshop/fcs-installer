@@ -34,8 +34,7 @@ if (empty($_SERVER)
 if (!defined('ISPHAR')) {
     if (!empty($_SERVER['PHAR_PATH_TRANSLATED'])) {
         define('ISPHAR', true);
-    }
-    else {
+    } else {
         define('ISPHAR', false);
     }
 }
@@ -47,8 +46,7 @@ if (!defined('PATH_DOCROOT')) {
 if (!defined('HTTP_URLROOT')) {
     if (ISPHAR) {
         define('HTTP_URLROOT', $_SERVER['SCRIPT_NAME'] . '/');
-    }
-    else {
+    } else {
         define('HTTP_URLROOT', '/');
     }
 }

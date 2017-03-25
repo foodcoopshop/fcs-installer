@@ -60,25 +60,23 @@ function render($api, $lang)
     }
 
     // prepare JS variable
+    $template_js = <<<'END_OF_JS'
+    var fcsinstaller = fcsinstaller || {};
+    fcsinstaller.options = %1$s;
+
+END_OF_JS;
     $options_js = array(
         'nonce'     => session_id(),
         'ajaxurl'   => HTTP_URLBASE . $api,
         'ajaxact'   => 'install',
     );
-    $options_js = sprintf(
-<<<'END_OF_JS'
-    var fcsinstaller = fcsinstaller || {};
-    fcsinstaller.options = %1$s;
-
-END_OF_JS
-        , json_encode($options_js)
-    );
+    $options_js = sprintf($template_js, json_encode($options_js));
+    unset($template_js);
 
     /*
      * HTML rendering
      * */
-    echo
-<<<END_OF_HTML
+    echo <<<END_OF_HTML
 <!doctype html>
 <html lang="{$lang}">
   <head>
@@ -101,4 +99,4 @@ END_OF_JS
 END_OF_HTML;
 }
 
-__HALT_COMPILER();
+__halt_compiler();

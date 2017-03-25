@@ -133,64 +133,59 @@ function api()
     || !session_start()
     || $_POST['nonce'] != session_id()
     ) {
-        result_exit($GLOBALS['results']['failCookie']);
+        exitResult($GLOBALS['results']['failCookie']);
     }
 
     if (empty($_POST['action'])) {
-        silent_exit($GLOBALS['results']['failEmpty']);
+        exitSilent($GLOBALS['results']['failEmpty']);
     }
 
     $data = $_POST['action'];
 
     if (empty($_POST[$data])) {
-        silent_exit($GLOBALS['results']['failEmpty']);
+        exitSilent($GLOBALS['results']['failEmpty']);
     }
 
     $data = $_POST[$data];
 
     // check common parameters first
     if (empty($data['action'])) {
-        silent_exit($GLOBALS['results']['failNoAction']);
+        exitSilent($GLOBALS['results']['failNoAction']);
     }
 
     if (strpos($data['action'], '-test') !== false) {
         if (!$GLOBALS['developer_mode']) {
-            silent_exit($GLOBALS['results']['failNoTestOnLive']);
+            exitSilent($GLOBALS['results']['failNoTestOnLive']);
         }
         $GLOBALS['test_mode'] = true;  // this a test run
         $data['action'] = str_replace('-test', '', $data['action']);
         if (!in_array($data['action'], $GLOBALS['actions'])) {
-            silent_exit($GLOBALS['results']['failNoActionOnTest']);
+            exitSilent($GLOBALS['results']['failNoActionOnTest']);
         }
     }
 
-    switch($data['action']) {
+    switch ($data['action']) {
         case 'step-0':
-            step_0($data);
-            step_next();
+            step0($data);
+            stepNext();
             break;
-
         case 'step-1':
-            step_1($data);
-            step_stop();
+            step1($data);
+            stepStop();
             break;
-
         case 'step-3':
-            step_3($data);
-            step_next();
+            step3($data);
+            stepNext();
             break;
-
         case 'step-4':
-            step_4($data);
-            step_stop();
+            step4($data);
+            stepStop();
             break;
-
         case 'step-5':
-            step_stop();
+            stepStop();
             break;
-
         default:
-            silent_exit($GLOBALS['results']['failNoActionOnSwitch']);
+            exitSilent($GLOBALS['results']['failNoActionOnSwitch']);
             break;
     }
 }
@@ -198,43 +193,48 @@ function api()
 /**
  * Do unpack the ZIP
  * */
-function step_4 (array $data) {
-/*
+function step4(array $data)
+{
+    /*
     if ($GLOBALS['test_mode']) {  // skip in test_mode, its unzipped already
         return;
     }
-*/
+    */
 
     $localfile = PATH_DOCROOT . DS . 'foodcoopshop.zip';
     // TODO: use ZipArchive to extract contents http://php.net/manual/de/class.ziparchive.php
-//    if (!$GLOBALS['test_mode']) {  // skip in test_mode, we know it is working
+    // TODO: run commands in shellcommands.txt to set required rights
+
+    //    if (!$GLOBALS['test_mode']) {  // skip in test_mode, we know it is working
         sleep(5);  // do not run too fast...
-//    }
+    //    }
     return;
 }
 
 /**
  * Do download the remote ZIP
  * */
-function step_3 (array $data) {
-/*
+function step3(array $data)
+{
+    /*
     if ($GLOBALS['test_mode']) {  // skip in test_mode, we do have the zip
         return;
     }
-*/
+    */
 
     $localfile = PATH_DOCROOT . DS . 'foodcoopshop.zip';
     if (!copy($GLOBALS['foodcoopshop'], $localfile)) {
-        result_exit($GLOBALS['results']['failZipDownload']);
+        exitResult($GLOBALS['results']['failZipDownload']);
     }
-// TODO: check for existence
+    // TODO: check for existence
     return;
 }
 
 /**
  * Do filesystem checks, e.g. Writing to .. is crucial
  * */
-function step_1 (array $data) {
+function step1(array $data)
+{
     /*
     if ($GLOBALS['test_mode']) {  // skip in test_mode, we know it is working
         return;
@@ -245,36 +245,36 @@ function step_1 (array $data) {
     // prevent doing harm
     $testfile = PATH_DOCROOT . DS . 'foodcoopshop.zip';
     if (file_exists($testfile)) {
-        result_exit($GLOBALS['results']['failFsZipExists']);
+        exitResult($GLOBALS['results']['failFsZipExists']);
     }
 
     // try to create, read and delete a file in Document Root
-    if (!test_readwrite($testfile)) {
-        result_exit($GLOBALS['results']['failFsRootNotWritable']);
+    if (!testReadWrite($testfile)) {
+        exitResult($GLOBALS['results']['failFsRootNotWritable']);
     }
 
     // prevent doing harm
     $testfile = PATH_DOCROOT . DS . 'tmp' . DS . 'foodcoopshop.zip';
     if (file_exists(dirname($testfile))) {
-        result_exit($GLOBALS['results']['failFsTmpExists']);
+        exitResult($GLOBALS['results']['failFsTmpExists']);
     }
 
     // create, write into, read from and delete a subdirectory of Document Root
     if (!mkdir(dirname($testfile))
-        || !test_readwrite($testfile)
+        || !testReadWrite($testfile)
         || !rmdir(dirname($testfile))
     ) {
-        result_exit($GLOBALS['results']['failFsCantMkdir']);
+        exitResult($GLOBALS['results']['failFsCantMkdir']);
     }
 
     $testfile = PATH_DOCROOT . DS . 'foodcoopshop.zip';
-    test_filecreate($testfile);
+    testFileCreate($testfile);
     $file = fopen(HTTP_BASE . '/foodcoopshop.zip', 'rb');
     $ok = is_resource($file);
     fclose($file);
-    test_filedelete($testfile);
+    testFileDelete($testfile);
     if (!$ok) {
-        result_exit($GLOBALS['results']['failFsCantHttp']);
+        exitResult($GLOBALS['results']['failFsCantHttp']);
     }
 
     sleep(5);  // do not run too fast...
@@ -285,27 +285,28 @@ function step_1 (array $data) {
 /**
  * Do prerequisite testing (PHP versions and libraries, PHP.ini values etc.
  * */
-function step_0 (array $data) {
+function step0(array $data)
+{
     if ($GLOBALS['test_mode']) {  // skip in test_mode, we know it is working
         return;
     }
 
     if (version_compare(phpversion(), '5.5', '<')) {
-        result_exit($GLOBALS['results']['failPhpVersion']);
+        exitResult($GLOBALS['results']['failPhpVersion']);
     }
 
     if (!extension_loaded('zip')) {
-        result_exit($GLOBALS['results']['failPhpZip']);
+        exitResult($GLOBALS['results']['failPhpZip']);
     }
     // TODO: check that allow_url_fopen is true
     // TODO: check that Registered PHP Streams  http and zip are set
     // TODO: check for ZipArchive class functions and the functions used to extract files
     // add more initial checks here
-/*
+    /*
     ob_start();
     phpinfo();  // use constants to get smaller portions of info at once
     $phpinfo = ob_get_clean();
-*/
+    */
 
     sleep(5);  // do not run too fast...
     return;
@@ -314,15 +315,17 @@ function step_0 (array $data) {
 /**
  * Stop an automatic running sequence of tests / actions
  * */
-function step_stop () {
-    result_exit($GLOBALS['results']['stop']);
+function stepStop()
+{
+    exitResult($GLOBALS['results']['stop']);
 }
 
 /**
  * Next step in automatic running sequence of tests / actions
  * */
-function step_next () {
-    result_exit($GLOBALS['results']['next']);
+function stepNext()
+{
+    exitResult($GLOBALS['results']['next']);
 }
 
 /**
@@ -330,7 +333,8 @@ function step_next () {
  *
  * On all systems, exit with a aresult
  * */
-function result_exit ($result) {
+function exitResult($result)
+{
     echo json_encode($result);
     exit;
 }
@@ -340,7 +344,8 @@ function result_exit ($result) {
  *
  * On development system be verbose, else exit silently
  * */
-function silent_exit ($result) {
+function exitSilent($result)
+{
     if ($GLOBALS['developer_mode']) {
         echo json_encode($result);
     }
@@ -350,12 +355,13 @@ function silent_exit ($result) {
 /**
  * Do read/write testing on file
  * */
-function test_readwrite ($filename) {
-    if (!test_filecreate($filename)) {
+function testReadWrite($filename)
+{
+    if (!testFileCreate($filename)) {
         return false;
     }
     clearstatcache();
-    if (!test_filedelete($filename)) {
+    if (!testFileDelete($filename)) {
         return false;
     }
     return true;
@@ -364,7 +370,8 @@ function test_readwrite ($filename) {
 /**
  * Create testfile
  * */
-function test_filecreate ($filename) {
+function testFileCreate($filename)
+{
     if (!is_writable(dirname($filename))
         || ($file = @fopen($filename, 'ab')) === false
         || @fwrite($file, 'test') === false
@@ -378,7 +385,8 @@ function test_filecreate ($filename) {
 /**
  * Delete testfile
  * */
-function test_filedelete ($filename) {
+function testFileDelete($filename)
+{
     if (@file_get_contents($filename) !== 'test'
         || (fileperms($filename) & 0700) < 0600
         || @unlink($filename) === false

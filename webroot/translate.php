@@ -38,8 +38,7 @@ function parseAcceptLanguage($hal, $default)
                 if ($langs[$parts['lang']] < $parts['q']) {
                     $langs[$parts['lang']] = $parts['q'];
                 }
-            }
-            else {
+            } else {
                 $langs[$parts['lang']] = $parts['q'];
             }
         }
@@ -81,8 +80,7 @@ function loadLangFile($file)
 {
     if (is_readable($file)) {
         include $file;
-    }
-    else {
+    } else {
         $msgs = array();
     }
     return $msgs;
