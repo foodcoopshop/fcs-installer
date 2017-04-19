@@ -17,6 +17,9 @@
 if (!defined('DS')) {
     define('DS', DIRECTORY_SEPARATOR);
 }
+if (!defined('PS')) {
+    define('PS', PATH_SEPARATOR);
+}
 
 if (!defined('ISWINDOWS')) {
     define('ISWINDOWS', defined('PHP_WINDOWS_VERSION_MAJOR'));
@@ -25,10 +28,13 @@ if (!defined('ISWINDOWS')) {
 if (empty($_SERVER)
     || empty($_SERVER['DOCUMENT_ROOT'])
     || empty($_SERVER['SCRIPT_NAME'])
-    || empty($_SERVER['REQUEST_SCHEME'])
     || empty($_SERVER['HTTP_HOST'])
 ) {
     exit('Cannot run here. Your server does not provide required infos in $_SERVER[]: ' . print_r($_SERVER, true));
+}
+
+if (empty($_SERVER['REQUEST_SCHEME'])) {
+    $_SERVER['REQUEST_SCHEME'] = 'http';
 }
 
 if (!defined('ISPHAR')) {

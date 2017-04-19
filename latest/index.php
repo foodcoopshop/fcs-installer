@@ -21,14 +21,12 @@ function render()
     // before trying loading the PHAR, make sure PHAR can be run
     if (version_compare(phpversion(), '5.4', '<')) {
         die('Installer cannot run on PHP version < 5.4');
-    }
-    else if (!extension_loaded('phar')) {
+    } else if (!extension_loaded('phar')) {
         die('Installer cannot run without PHAR extension');
-    }
-    else {
+    } else {
         header('Location:/fcs-installer.php/index2.php');
         exit;
     }
 }
 
-__HALT_COMPILER();
+__halt_compiler();
