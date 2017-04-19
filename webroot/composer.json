@@ -1,5 +1,5 @@
 {
-    "name": "foodcoopshop/fcs_installer",
+    "name": "foodcoopshop/fcs-installer",
     "description": "Installs the FoodCoopShop open source software for your foodcoop",
     "homepage": "https://www.foodcoopshop.com",
     "license": "MIT",
